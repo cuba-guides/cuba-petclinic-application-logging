@@ -7,6 +7,8 @@ import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.EmailInfo;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -17,6 +19,9 @@ import java.util.Map;
 
 @Service(DiseaseWarningMailingService.NAME)
 public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingService {
+
+
+  private static final Logger log = LoggerFactory.getLogger(DiseaseWarningMailingServiceBean.class);
 
   @Inject
   protected DataManager dataManager;
@@ -29,13 +34,19 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
   @Override
   public int warnAboutDisease(PetType petType, String disease, String city) {
 
-    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
+    log.debug("Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}");
 
+    List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
     List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
 
-    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+    log.debug("possible pets in danger: {}", petsWithEmail);
 
-    return petsWithEmail.size();
+    petsWithEmail.forEach(pet -> sendEmailToPetsOwner(pet, disease, city));
+    int amountOfInformedPets = petsWithEmail.size();
+
+    log.info("Summary: Disease warning send out to {} Pet(s) in {}", amountOfInformedPets, city);
+
+    return amountOfInformedPets;
   }
 
   private List<Pet> filterPetsWithValidOwnersEmail(List<Pet> petsInDiseaseCity) {
@@ -61,6 +72,8 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
     );
 
     emailerAPI.sendEmailAsync(email);
+
+    log.debug("Disease Warning Email send to {} for pet {}", ownerEmail, pet);
   }
 
   private List<Pet> findPetsInDiseaseCity(PetType petType, String city) {
