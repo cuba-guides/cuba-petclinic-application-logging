@@ -6,6 +6,9 @@ import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.View;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -13,6 +16,9 @@ import java.util.Optional;
 
 @Component(PetContactFetcher.NAME)
 public class PetContactFetcherBean implements PetContactFetcher {
+
+    private static final Logger log = LoggerFactory.getLogger(PetContactFetcherBean.class);
+
 
     @Inject
     DataManager dataManager;
@@ -23,9 +29,14 @@ public class PetContactFetcherBean implements PetContactFetcher {
     @Override
     public Optional<Contact> findContact(Pet pet) {
 
+        MDC.put("petId", pet.getIdentificationNumber());
+
+        log.debug("Searching Contact for Pet");
+
         Optional<Owner> petOwner = loadOwnerFor(pet);
 
         if (petOwner.isPresent()) {
+            log.debug("Found Owner: {}", petOwner);
 
             Owner owner = petOwner.get();
             String telephone = owner.getTelephone();
@@ -49,9 +60,15 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
 
     private Optional<Contact> createContact(String contactValue, ContactType contactType) {
+
         Contact contact = new Contact();
         contact.setValue(contactValue);
         contact.setType(contactType);
+
+        log.info("Contact created: {}", contact);
+
+        MDC.remove("petId");
+
         return Optional.of(contact);
     }
 
