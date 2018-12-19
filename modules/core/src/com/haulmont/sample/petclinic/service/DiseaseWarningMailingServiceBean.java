@@ -34,7 +34,7 @@ public class DiseaseWarningMailingServiceBean implements DiseaseWarningMailingSe
   @Override
   public int warnAboutDisease(PetType petType, String disease, String city) {
 
-    log.debug("Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}");
+    log.debug("Disease warnings should be send out for Pet type: {}, Disease: {} in the area of {}", petType, disease, city);
 
     List<Pet> petsInDiseaseCity = findPetsInDiseaseCity(petType, city);
     List<Pet> petsWithEmail = filterPetsWithValidOwnersEmail(petsInDiseaseCity);
