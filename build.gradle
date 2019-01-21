@@ -57,6 +57,8 @@ configure([globalModule, coreModule, webModule]) {
     apply(plugin: 'cuba')
 
     dependencies {
+        runtime "com.internetitem:logback-elasticsearch-appender:1.6"
+
         testCompile('junit:junit:4.12')
     }
 
