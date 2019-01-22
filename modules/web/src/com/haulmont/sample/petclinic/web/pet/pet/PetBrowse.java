@@ -5,12 +5,7 @@ import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.Screens;
 import com.haulmont.cuba.gui.components.Action;
 import com.haulmont.cuba.gui.components.GroupTable;
-import com.haulmont.cuba.gui.screen.LookupComponent;
-import com.haulmont.cuba.gui.screen.OpenMode;
-import com.haulmont.cuba.gui.screen.StandardLookup;
-import com.haulmont.cuba.gui.screen.Subscribe;
-import com.haulmont.cuba.gui.screen.UiController;
-import com.haulmont.cuba.gui.screen.UiDescriptor;
+import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.sample.petclinic.contact.Contact;
 import com.haulmont.sample.petclinic.contact.PetContactFetcher;
 import com.haulmont.sample.petclinic.entity.pet.Pet;
@@ -20,6 +15,7 @@ import javax.inject.Inject;
 @UiController("petclinic_Pet.browse")
 @UiDescriptor("pet-browse.xml")
 @LookupComponent("petsTable")
+@LoadDataBeforeShow
 public class PetBrowse extends StandardLookup<Pet> {
 
     @Inject
@@ -73,9 +69,8 @@ public class PetBrowse extends StandardLookup<Pet> {
 
         String discountMessage = "Discount for " + petName + ": " + discount + "%";
 
-        notifications.create()
-            .setCaption(discountMessage)
-            .setType(Notifications.NotificationType.TRAY)
+        notifications.create(Notifications.NotificationType.TRAY)
+            .withCaption(discountMessage)
             .show();
     }
 

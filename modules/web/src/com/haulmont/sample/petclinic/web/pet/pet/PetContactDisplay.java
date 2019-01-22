@@ -30,8 +30,8 @@ public class PetContactDisplay {
 
         notifications
             .create()
-            .setCaption(notificationMsg)
-            .setType(notificationType)
+            .withCaption(notificationMsg)
+            .withType(notificationType)
             .show();
     }
 }

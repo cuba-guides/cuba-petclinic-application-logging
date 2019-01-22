@@ -1,5 +1,6 @@
 package com.haulmont.sample.petclinic.web.pet.pet;
 
+import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.sample.petclinic.contact.Contact;
 import com.haulmont.sample.petclinic.contact.PetContactFetcher;
 import com.haulmont.sample.petclinic.entity.pet.Pet;
@@ -14,7 +15,8 @@ import javax.inject.Inject;
 
 @UiController("petclinic_Pet.edit")
 @UiDescriptor("pet-edit.xml")
-@EditedEntityContainer("petCt")
+@EditedEntityContainer("petDc")
+@LoadDataBeforeShow
 public class PetEdit extends StandardEditor<Pet> {
 
     @Inject
