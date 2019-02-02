@@ -1,4 +1,4 @@
-Hello ${owner.firstName} ${owner.lastName},
+Hello ${owner.firstName},
 
 In the Area of ${city} the following disease have been reported: ${disease}.
 In case your Pet ${pet.name} shows any unusual behavior, please approach CUBAs Petclinic.
