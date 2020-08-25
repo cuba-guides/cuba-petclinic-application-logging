@@ -33,27 +33,32 @@ public class PetContactFetcherBean implements PetContactFetcher {
 
         log.debug("Searching Contact for Pet");
 
-        Optional<Owner> petOwner = loadOwnerFor(pet);
+        try {
+            Optional<Owner> petOwner = loadOwnerFor(pet);
 
-        if (petOwner.isPresent()) {
-            log.debug("Found Owner: {}", petOwner);
+            if (petOwner.isPresent()) {
+                log.debug("Found Owner: {}", petOwner);
 
-            Owner owner = petOwner.get();
-            String telephone = owner.getTelephone();
-            String email = owner.getEmail();
-            String address = formatOwnerAddress(owner);
+                Owner owner = petOwner.get();
+                String telephone = owner.getTelephone();
+                String email = owner.getEmail();
+                String address = formatOwnerAddress(owner);
 
-            if (isAvailable(telephone)) {
-                return createContact(telephone, ContactType.TELEPHONE);
-            } else if (isAvailable(email)) {
-                return createContact(email, ContactType.EMAIL);
-            } else if (isAvailable(address)) {
-                return createContact(address, ContactType.ADDRESS);
+                if (isAvailable(telephone)) {
+                    return createContact(telephone, ContactType.TELEPHONE);
+                } else if (isAvailable(email)) {
+                    return createContact(email, ContactType.EMAIL);
+                } else if (isAvailable(address)) {
+                    return createContact(address, ContactType.ADDRESS);
+                } else {
+                    return Optional.empty();
+                }
             } else {
                 return Optional.empty();
             }
-        } else {
-            return Optional.empty();
+        }
+        finally {
+            MDC.remove("petId");
         }
 
     }
@@ -66,8 +71,6 @@ public class PetContactFetcherBean implements PetContactFetcher {
         contact.setType(contactType);
 
         log.info("Contact created: {}", contact);
-
-        MDC.remove("petId");
 
         return Optional.of(contact);
     }
